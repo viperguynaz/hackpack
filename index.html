@@ -1,16 +1,52 @@
 <!doctype html>
 <html>
-    <head>
-        <title>Don's Hackpack App!</title>
-        <style>
-            body {background:white;background: linear-gradient(70deg,#FC466B 0%,#3F5EFB 100%);height: 100vh;margin: 0;font-size: 22px;line-height: 1.5;cursor: none;}
+
+<head>
+    <title>Don's Hackpack App!</title>
+    <style>
+        body {background:white;background: linear-gradient(70deg,#FC466B 0%,#3F5EFB 100%);height: 100vh;margin: 0;font-size: 22px;line-height: 1.5;cursor: none;}
             h1   {color: blue;}
             p    {color: red;}
         </style>
-    </head>
-    <body>
-        <div style="margin:0 auto;padding:10px;color:#FFFFFF;width:640px;height:480px;overflow:hidden;outline:1px solid #EBD82F;background-color:#233659;position:relative">
-            Don's Hackpack App!
-        </div>
-    </body>
+</head>
+
+<body>
+    <div style="margin:0 auto;padding:10px;color:#FFFFFF;width:640px;height:480px;overflow:hidden;outline:1px solid #EBD82F;background-color:#233659;position:relative">
+        <h1>Don's Hackpack App!</h1>
+    </div>
+</body>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var maxRetries = 5; // maximum number of times to look for the PyAPI
+        var delay = 5000; // in milliseconds
+        var have_python_api = false; // useful in other parts of the code
+
+        function rejectDelay(reason) {
+            return new Promise(function (resolve, reject) {
+                setTimeout(reject.bind(null, reason), delay);
+            });
+        }
+
+        function lightDemo(retry) {
+            try {
+                pywebview.api.showLightsParams({ 'demo': 3, 'repeat': 2 });
+            } catch (ex) {
+                if (retry < maxRetries) {
+                    setTimeout(function () { lightDemo(retry + 1); }, delay);
+                    return;
+                } else {
+                    console.log("> Too many retries. Are you not in the webview?");
+                    return;
+                }
+            }
+
+            // Successfully called lights, call them again soon
+            setTimeout(function () { lightDemo(-1); have_python_api = true; }, delay);
+        }
+
+        setTimeout(function () { lightDemo(0); }, delay);
+    });
+</script>
+
 </html>
